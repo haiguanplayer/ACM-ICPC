@@ -1,0 +1,608 @@
+A
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+int id[1005];
+char board[1005][1005];
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int n,m,q;
+        scanf("%d%d%d",&n,&m,&q);
+        for(int i=1;i<=n;i++)
+            for(int j=1;j<=m;j++)
+                board[i][j]='.';
+        for(int i=1;i<=n;i++)
+            id[i]=i;
+        while(q--)
+        {
+            int ty,cl,x,y;
+            scanf("%d",&ty);
+            if(ty==1)
+            {
+                scanf("%d%d%d",&cl,&x,&y);
+                board[id[x]][y]=" wb"[cl];
+            }
+            else
+            {
+                scanf("%d%d",&x,&y);
+                swap(id[x],id[y]);
+            }
+        }
+        for(int i=1;i<=n;i++,printf("\n"))
+            for(int j=1;j<=m;j++)
+                printf("%c",board[id[i]][j]);
+    }
+    return 0;
+}
+
+
+B
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+#include<queue>
+using namespace std;
+const int MAXN=205;
+const int MAXM=100005;
+const int INF=0x3f3f3f3f;
+struct Edge
+{
+    int to,next,cap,flow,cost;
+} edge[MAXM];
+int head[MAXN],tol;
+int pre[MAXN],dis[MAXN];
+bool vis[MAXN];
+int N;
+void init(int n)
+{
+    N = n;
+    tol = 0;
+    memset(head,-1,sizeof(head));
+}
+void addedge(int u,int v,int cap,int cost)
+{
+    edge[tol].to = v;
+    edge[tol].cap = cap;
+    edge[tol].cost = cost;
+    edge[tol].flow = 0;
+    edge[tol].next = head[u];
+    head[u] = tol++;
+    edge[tol].to = u;
+    edge[tol].cap = 0;
+    edge[tol].cost = -cost;
+    edge[tol].flow = 0;
+    edge[tol].next = head[v];
+    head[v] = tol++;
+}
+bool spfa(int s,int t)
+{
+    queue<int>q;
+    for(int i = 0; i < N; i++)
+    {
+        dis[i] = INF;
+        vis[i] = false;
+        pre[i] = -1;
+    }
+    dis[s] = 0;
+    vis[s] = true;
+    q.push(s);
+    while(!q.empty())
+    {
+        int u = q.front();
+        q.pop();
+        vis[u] = false;
+        for(int i = head[u]; i != -1; i = edge[i].next)
+        {
+            int v = edge[i].to;
+            if(edge[i].cap > edge[i].flow &&
+                    dis[v] > dis[u] + edge[i].cost )
+            {
+                dis[v] = dis[u] + edge[i].cost;
+                pre[v] = i;
+                if(!vis[v])
+                {
+                    vis[v] = true;
+                    q.push(v);
+                }
+            }
+        }
+    }
+    if(pre[t] == -1)return false;
+    else return true;
+}
+int MCMF(int s,int t,int &cost)
+{
+    int flow = 0;
+    cost = 0;
+    while(spfa(s,t))
+    {
+        int Min = INF;
+        for(int i = pre[t]; i != -1; i = pre[edge[i^1].to])
+        {
+            if(Min > edge[i].cap - edge[i].flow)
+                Min = edge[i].cap - edge[i].flow;
+        }
+        for(int i = pre[t]; i != -1; i = pre[edge[i^1].to])
+        {
+            edge[i].flow += Min;
+            edge[i^1].flow -= Min;
+            cost += edge[i].cost * Min;
+        }
+        flow += Min;
+    }
+    return flow;
+}
+int dp[MAXN][MAXN];
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int n,m;
+        scanf("%d%d",&n,&m);
+        for(int i=0; i<n+m; i++)
+            for(int j=0; j<n+m; j++)
+            {
+                scanf("%d",&dp[i][j]);
+                if(dp[i][j]<0)dp[i][j]=INF;
+            }
+        for(int k=0; k<n+m; k++)
+            for(int i=0; i<n+m; i++)
+                for(int j=0; j<n+m; j++)
+                    dp[i][j]=min(dp[i][j],dp[i][k]+dp[k][j]);
+        init(n+m+2);
+        for(int i=0;i<n;i++)
+            addedge(n+m,i,1,0);
+        for(int i=n;i<n+m;i++)
+            addedge(i,n+m+1,1,0);
+        for(int i=0;i<n;i++)
+            for(int j=n;j<n+m;j++)
+                if(dp[i][j]<INF)addedge(i,j,1,-dp[i][j]);
+        int cost=0;
+        MCMF(n+m,n+m+1,cost);
+        printf("%d\n",-cost);
+    }
+    return 0;
+}
+
+
+C
+
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+typedef long long ll;
+typedef long double ldb;
+const int MAXN=200005;
+const ldb eps=1e-3;
+char s[MAXN],Ma[MAXN<<1];
+int Mp[MAXN<<1];
+void Manacher(char s[],int len)
+{
+    int l=0;
+    Ma[l++]='$';
+    Ma[l++]='#';
+    for(int i=0;i<len;i++)
+    {
+        Ma[l++]=s[i];
+        Ma[l++]='#';
+    }
+    Ma[l]=0;
+    int mx=0,id=0;
+    for(int i=0;i<l;i++)
+    {
+        Mp[i]=(mx>i ? min(Mp[2*id-i],mx-i) : 1);
+        while(Ma[i+Mp[i]]==Ma[i-Mp[i]])Mp[i]++;
+        if(i+Mp[i]>mx)mx=i+Mp[i],id=i;
+    }
+}
+ll a[MAXN],pre[MAXN],pre2[MAXN];
+int sgn(ldb x)
+{
+    if(x>eps)return 1;
+    if(x<-eps)return -1;
+    return 0;
+}
+struct Point
+{
+    ll x,y;
+    Point() {}
+    Point(ll _x,ll _y):x(_x),y(_y) {}
+    Point operator - (const Point &t)const
+    {
+        return Point(x-t.x,y-t.y);
+    }
+    ldb operator * (const Point &t)const
+    {
+        return (ldb)x*t.y-(ldb)y*t.x;
+    }
+    ll operator ^ (const Point &t)const
+    {
+        return x*t.x+y*t.y;
+    }
+} stk[MAXN];
+int top=0;
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int n;
+        scanf("%d%s",&n,s);
+        Manacher(s,n);
+        for(int i=1;i<=n;i++)
+            a[i]=Mp[i<<1]-1;
+        for(int i=1;i<=n;i++)
+            if(i%2==0)a[i]=-a[i];
+        for(int i=1;i<=n;i++)
+        {
+            pre[i]=pre[i-1]+a[i];
+            pre2[i]=pre2[i-1]+i*a[i];
+        }
+        ll res=(top=0);
+        for(int i=1;i<=n;i++)
+        {
+            Point t=Point(i-1,(i-1)*pre[i-1]-pre2[i-1]);
+            while(top>1 && sgn((t-stk[top])*(stk[top]-stk[top-1]))<=0)--top;
+            stk[++top]=t;
+            int l=1,r=top;
+            Point p=Point(-pre[i],1);
+            while(l<r)
+            {
+                int m1=(2*l+r)/3;
+                int m2=(l+2*r+2)/3;
+                if((p^stk[m1])<(p^stk[m2]))l=m1+1;
+                else r=m2-1;
+            }
+            res=max(res,pre2[i]+(p^stk[l]));
+        }
+        printf("%lld\n",res);
+    }
+    return 0;
+}
+
+D
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+#include<set>
+using namespace std;
+const int Mod=10007;
+int fac[Mod],inv[Mod];
+int fp(int a,int k)
+{
+    int res=1;
+    while(k)
+    {
+        if(k&1)res=1LL*res*a%Mod;
+        a=1LL*a*a%Mod;
+        k>>=1;
+    }
+    return res;
+}
+int C(int n,int k)
+{
+    if(k>n)return 0;
+    return 1LL*fac[n]*inv[k]*inv[n-k]%Mod;
+}
+int Lucas(int n,int k)
+{
+    if(k==0)return 1;
+    return Lucas(n/Mod,k/Mod)*C(n%Mod,k%Mod)%Mod;
+}
+int main()
+{
+    for(int i=(fac[0]=1);i<Mod;i++)
+        fac[i]=1LL*i*fac[i-1]%Mod;
+    for(int i=0;i<Mod;i++)
+        inv[i]=fp(fac[i],Mod-2);
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int x,y;
+        scanf("%d%d",&x,&y);
+        printf("%d\n",(Lucas(x+y,x)-Lucas(x+y,x+1)+Mod)%Mod);
+    }
+    return 0;
+}
+
+
+E
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+const int MAXN=100005;
+const int Mod=1000000007;
+int a[MAXN],b[MAXN],dp[31];
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int n;
+        scanf("%d",&n);
+        for(int i=1;i<=n;i++)
+        {
+            scanf("%d",&a[i]);
+            b[i]=-1;
+            for(int j=0;j<30;j++)
+                if(a[i]==(1<<j))b[i]=j;
+        }
+        for(int i=0;i<=30;i++)
+            dp[i]=0;
+        for(int i=1;i<=n;i++)
+        {
+            if(b[i]<0)continue;
+            if(b[i]==0)dp[0]=(dp[0]+1)%Mod;
+            else dp[b[i]]=(dp[b[i]]+dp[b[i]-1])%Mod;
+        }
+        int res=0;
+        for(int i=0;i<=30;i++)
+            res=(res+dp[i])%Mod;
+        printf("%d\n",res);
+    }
+    return 0;
+}
+
+
+
+
+
+F
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+int main()
+{
+    int T;
+    while(scanf("%d",&T)!=EOF)
+    {
+        while(T--)
+        {
+            int n;
+            scanf("%d",&n);
+            if(n%4<=1)printf("yes\n");
+            else printf("no\n");
+        }
+    }
+    return 0;
+}
+
+
+G
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+#include<set>
+using namespace std;
+set<pair<int,int> >st;
+int gcd(int x,int y)
+{
+    return y ? gcd(y,x%y) : x;
+}
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int a,b,n;
+        scanf("%d%d%d",&a,&b,&n);
+        st.clear();
+        for(int i=1;i<=n;i++)
+        {
+            int x,y;
+            scanf("%d%d",&x,&y);
+            x-=a,y-=b;
+            int g=gcd(x,y);
+            st.insert(make_pair(x/g,y/g));
+        }
+        printf("%d\n",(int)st.size());
+    }
+    return 0;
+}
+
+
+H
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+typedef double db;
+int a[105];
+db p[105],dp[2][50005];
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int n;
+        scanf("%d",&n);
+        for(int i=1;i<=n;i++)
+            scanf("%d",&a[i]);
+        for(int i=1;i<=n;i++)
+            scanf("%lf",&p[i]);
+        for(int i=0;i<2;i++)
+            for(int j=0;j<=500*n;j++)
+                dp[i][j]=-1.0;
+        int now=0,la=1;
+        dp[0][0]=0;
+        for(int i=1;i<=n;i++)
+        {
+            swap(la,now);
+            for(int j=0;j<=500*n;j++)
+                dp[now][j]=dp[la][j];
+            for(int j=a[i];j<=500*n;j++)
+                if(dp[la][j-a[i]]>-0.5)
+                {
+                    db tmp=dp[la][j-a[i]]+(1-dp[la][j-a[i]])*p[i];
+                    if(dp[now][j]<-0.5)dp[now][j]=tmp;
+                    else dp[now][j]=min(dp[now][j],tmp);
+                }
+        }
+        int res=0;
+        for(int j=0;j<=500*n;j++)
+            if(dp[now][j]>-0.5 && dp[now][j]<0.81)
+                res=j;
+        printf("%d\n",res);
+    }
+    return 0;
+}
+
+
+
+
+I
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+string str;
+bool isok(string a,string b)
+{
+    int ost=0;
+    for(int i=0;i<(int)a.size() && i+ost<(int)b.size();i++)
+        if(a[i]!=b[i+ost])
+        {
+            if(ost)return 0;
+            i--,ost++;
+        }
+    return 1;
+}
+bool check(int n,int len)
+{
+    bool usd=0;
+    for(int i=0;i+len<n;i+=len)
+        if(str.substr(0,len)!=str.substr(i,len))
+        {
+            if(usd)return 0;
+            if(isok(str.substr(0,len),str.substr(i,len+1)))
+                i++,usd=1;
+            else return 0;
+        }
+    return 1;
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    int T;
+    cin>>T;
+    while(T--)
+    {
+        int n;
+        cin>>n>>str;
+        if(n==1)
+        {
+            printf("0\n");
+            continue;
+        }
+        int res=1;
+        for(int i=n-1;i>=2;i--)
+            if((n-1)%i==0 && check(n,(n-1)/i))
+            {
+                res=max(res,i);
+                break;
+            }
+        reverse(str.begin(),str.end());
+        for(int i=n-1;i>=2;i--)
+            if((n-1)%i==0 && check(n,(n-1)/i))
+            {
+                res=max(res,i);
+                break;
+            }
+        printf("%d\n",res);
+    }
+    return 0;
+}
+
+
+J
+
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+typedef double db;
+db res[200000];
+int cnt[100000];
+int gcd(int x,int y)
+{
+    return y ? gcd(y,x%y) : x;
+}
+int main()
+{
+    for(int i=1;i<200000;i++)
+        res[i]=res[i-1]+1.0/i;
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+        int n;
+        scanf("%d",&n);
+        memset(cnt,0,sizeof(cnt));
+        int mx=0,tot=0,buf=0;
+        for(int i=1;i<=n;i++)
+        {
+            int t;
+            scanf("%d",&t);
+            cnt[t]++;
+            mx=max(mx,t);
+        }
+        if(mx==0)tot=1;
+        else
+        {
+            int gg=mx,ok=cnt[0];
+            for(int i=1;i<=mx;i++)
+                if(cnt[i])gg=gcd(gg,i);
+            for(int i=gg;i<=mx;i+=gg)
+                tot+=max(cnt[i],1),buf+=!cnt[i];
+            tot+=ok;
+        }
+        printf("%d\n",(int)(tot*res[tot])+buf);
+    }
+    return 0;
+}
