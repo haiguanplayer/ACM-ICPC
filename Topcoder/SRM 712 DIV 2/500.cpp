@@ -3,10 +3,11 @@ using namespace std;
 
 class MakePalindrome {
 public:
-    string constructMinimal(string card){
-        int a[280];
+    vector <string> constructMinimal(string card){
+        //vector<int> a(256);
+        int a[280] = {0};
         for(int i = 0;i < card.size();i++)
-            a[card[i]]++;
+            a[(int)card[i]]++;
 
         string s = "";
         vector<string> ans;
@@ -17,9 +18,8 @@ public:
 
             if(a[i]&1)
             {
-                string tmp = "";
-                tmp += (char)i;
-                ans.push_back(tmp);
+                ans.push_back(string());
+                ans.back() += (char)i;
             }
         }
 
