@@ -61,4 +61,78 @@ int main()
         printf("%d\n",a[n]);
     }
 }
+//2
+#include<bits/stdc++.h>
+using namespace std;
+int a[15] = {0,3,3,5,4,4,3,5,5,4};
+int b[25] = {0,0,0,0,0,0,0,0,0,0,3,6,6,8,8,7,7,9,8,8};//十几
+int c[15] = {0,0,6,6,5,5,5,7,6,6};//几十
+int f[1005];
+void Init()
+{
+    for(int i = 1;i <= 1000;i++)
+    {
+            int x = i;
+            if(x == 1000)
+            {
+                f[i] += 11;
+                continue;
+            }
+            int s[5] = {0},num = 0;
+            while(x > 0)
+            {
+                s[num++] = x % 10;
+                x /= 10;
+            }
+            if(s[2] == 0)
+            {
+                if(s[1] == 0)
+                {
+                    f[i] += a[s[0]];
+                }
+                else
+                {
+                    if(s[1] == 1)
+                        f[i] += b[10+s[0]];
+                    else
+                        f[i] += c[s[1]] + a[s[0]];
+                }
+            }
+            else//第一位不为0
+            {
+                if(s[1] == 0)//第二位等于0  00
+                {
+                    if(s[0] == 0)//x00
+                        f[i] += a[s[2]] + 7 + a[s[0]];
+                    else
+                        f[i] += a[s[2]] + 7  + 3 + a[s[0]];
+                }
+                else
+                {
+                    if(s[1] == 1)
+                        f[i] += a[s[2]] + 7  + 3 + b[10+s[0]];
+                    else
+                        f[i] += a[s[2]] + 7  + 3 + c[s[1]] + a[s[0]];
+                }//4 7 3 6 4
+            }
+    }
+}
+int main()
+{
+    Init();
+    //for(int i = 100;i <= 200;i++)
+    //cout<<f[i]<<endl;
+    int t,n;
+    cin >> t;
+    while(t--)
+    {
+        scanf("%d",&n);
+        int sum = 0;
+        for(int i = 1;i <= n;i++)
+            sum += f[i];
+        //cout<<f[n]<<endl;
+        printf("%d\n",sum);
+    }
+    return 0;
+}
 
