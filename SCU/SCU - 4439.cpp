@@ -15,7 +15,6 @@ int dfs(int x)
             if(!used[u] || dfs(used[u]))
             {
                 used[u] = x;
-                used[x] = u;
                 return true;
             }
         }
@@ -47,7 +46,7 @@ int main()
                     ans++;
             }
         }
-        printf("%d\n",ans);
+        printf("%d\n",ans/2);
     }
     return 0;
 }
