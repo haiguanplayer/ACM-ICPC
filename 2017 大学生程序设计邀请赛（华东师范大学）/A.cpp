@@ -2,7 +2,6 @@
 #include<cstdio>
 #include<algorithm>
 #include<cstring>
-#include<string>
 using namespace std;
 
 //string str;
@@ -21,18 +20,18 @@ int main()
         {
             cnt = str[len-1] - '0';
             len--;
-            bool a = false,e = false,i = false,o = false,u = false,v = false;
-            for(int i = 0;i < len;i++)
+            int numa=0,nume=0,numi=0,numo=0,numu=0,numv=0;
+            for(int i=0;i<len;i++)
             {
-                if(str[i] == 'a')   a = true;
-                if(str[i] == 'e')   e = true;
-                if(str[i] == 'i')   i = true;
-                if(str[i] == 'o')   o = true;
-                if(str[i] == 'u')   u = true;
-                if(str[i] == 'v')   v = true;
+                if(str[i]=='a') numa=1;
+                if(str[i]=='e') nume=1;
+                if(str[i]=='i') numi=1;
+                if(str[i]=='o') numo=1;
+                if(str[i]=='u') numu=1;
+                if(str[i]=='v') numv=1;
             }
             //bool flag = false;
-            if(a)
+            if(numa)
             {
                 for(int i = 0;i < len;i++)
                 {
@@ -51,53 +50,98 @@ int main()
                         printf("%c",str[i]);
                 }
             }
-            else
+            else if(numo)
             {
-                if(o)
+                for(int i = 0;i < len;i++)
                 {
-                    for(int i = 0;i < len;i++)
+                    if(str[i] == 'o')
                     {
-                        if(str[i] == 'o')
-                        {
-                            if(cnt == 1)
-                                printf("ин");
-                            else if(cnt == 2)
-                                printf("ио");
-                            else if(cnt == 3)
-                                printf("ип");
-                            else
-                                printf("и░");
-                        }
+                        if(cnt == 1)
+                            printf("ин");
+                        else if(cnt == 2)
+                            printf("ио");
+                        else if(cnt == 3)
+                            printf("ип");
                         else
-                            printf("%c",str[i]);
+                            printf("и░");
                     }
+                    else
+                        printf("%c",str[i]);
                 }
-                else if(e)
+            }
+            else if(nume)
+            {
+                for(int i = 0;i < len;i++)
                 {
-                    for(int i = 0;i < len;i++)
+                    if(str[i] == 'e')
                     {
-                        if(str[i] == 'e')
-                        {
-                            if(cnt == 1)
-                                printf("ие");
-                            else if(cnt == 2)
-                                printf("иж");
-                            else if(cnt == 3)
-                                printf("из");
-                            else
-                                printf("ии");
-                        }
-                        else if(str[i] == 'v')
-                            printf("u");
+                        if(cnt == 1)
+                            printf("ие");
+                        else if(cnt == 2)
+                            printf("иж");
+                        else if(cnt == 3)
+                            printf("из");
                         else
-                            printf("%c",str[i]);
+                            printf("ии");
                     }
+                    else if(str[i] == 'v')
+                        printf("u");
+                    else
+                        printf("%c",str[i]);
                 }
-                else if(i && !u)
+            }
+            else if(numi && !numu)
+            {
+                for(int i = 0;i < len;i++)
                 {
-                    for(int i = 0;i < len;i++)
+                    if(str[i] == 'i')
                     {
-                        if(str[i] == 'i')
+                        if(cnt == 1)
+                            printf("ий");
+                        else if(cnt == 2)
+                            printf("ик");
+                        else if(cnt == 3)
+                            printf("ил");
+                        else
+                            printf("им");
+                    }
+                    else
+                        printf("%c",str[i]);
+                }
+            }
+            else if(!numi && numu)
+            {
+                for(int i = 0;i < len;i++)
+                {
+                    if(str[i] == 'u')
+                    {
+                        if(cnt == 1)
+                            printf("и▒");
+                        else if(cnt == 2)
+                            printf("и▓");
+                        else if(cnt == 3)
+                            printf("и│");
+                        else
+                            printf("и┤");
+                    }
+                    else
+                        printf("%c",str[i]);
+                }
+            }
+            else if(numi && numu)
+            {
+                int post1=0;
+                int post2=0;
+                for(int i=0;i<len;i++)
+                {
+                    if(str[i]=='u')   post1=i;
+                    if(str[i]=='i')   post2=i;
+                }
+                if(post1<post2)
+                {
+                    for(int i=0;i<len;i++)
+                    {
+                        if(str[i]=='i')
                         {
                             if(cnt == 1)
                                 printf("ий");
@@ -108,15 +152,14 @@ int main()
                             else
                                 printf("им");
                         }
-                        else
-                            printf("%c",str[i]);
+                        else printf("%c",str[i]);
                     }
                 }
-                else if(!i && u)
+                else
                 {
-                    for(int i = 0;i < len;i++)
+                    for(int i=0;i<len;i++)
                     {
-                        if(str[i] == 'u')
+                        if(str[i]=='u')
                         {
                             if(cnt == 1)
                                 printf("и▒");
@@ -127,74 +170,27 @@ int main()
                             else
                                 printf("и┤");
                         }
-                        else
-                            printf("%c",str[i]);
+                        else printf("%c",str[i]);
                     }
                 }
-                else if(i && u)
+            }
+            else if(numv)
+            {
+                for(int i = 0;i < len;i++)
                 {
-                    int post1=0;
-                    int post2=0;
-                    for(int i=0;i<len-1;i++)
+                    if(str[i] == 'v')
                     {
-                        if(str[i]=='u')   post1=i;
-                        if(str[i]=='i')   post2=i;
-                    }
-                    if(post1<post2)
-                    {
-                        for(int i=0;i<len;i++)
-                        {
-                            if(str[i]=='i')
-                            {
-                                if(cnt == 1)
-                                    printf("ий");
-                                else if(cnt == 2)
-                                    printf("ик");
-                                else if(cnt == 3)
-                                    printf("ил");
-                                else
-                                    printf("им");
-                            }
-                            else printf("%c",str[i]);
-                       }
+                        if(cnt == 1)
+                            printf("и╡");
+                        else if(cnt == 2)
+                            printf("и╢");
+                        else if(cnt == 3)
+                            printf("и╖");
+                        else
+                            printf("и╕");
                     }
                     else
-                    {
-                        for(int i=0;i<len;i++)
-                        {
-                            if(str[i]=='u')
-                            {
-                               if(cnt == 1)
-                                    printf("и▒");
-                                else if(cnt == 2)
-                                    printf("и▓");
-                                else if(cnt == 3)
-                                    printf("и│");
-                                else
-                                    printf("и┤");
-                            }
-                            else printf("%c",str[i]);
-                        }
-                    }
-                }
-                else if(v && !e)
-                {
-                    for(int i = 0;i < len;i++)
-                    {
-                        if(str[i] == 'v')
-                        {
-                            if(cnt == 1)
-                                printf("и╡");
-                            else if(cnt == 2)
-                                printf("и╢");
-                            else if(cnt == 3)
-                                printf("и╖");
-                            else
-                                printf("и╕");
-                        }
-                        else
-                            printf("%c",str[i]);
-                    }
+                        printf("%c",str[i]);
                 }
             }
         }
