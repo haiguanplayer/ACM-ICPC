@@ -15,7 +15,7 @@ bool judge(double m)
 int main()
 {
     cin >> n >> t;
-    double l = -1e3,r = 1e9,mid;
+    double l = -1e3,r = 1e6+1e3,mid;
     for(int i = 0;i < n;i++)
         scanf("%d%d",&d[i],&s[i]),l = max(l,(double)(-s[i]));
 
