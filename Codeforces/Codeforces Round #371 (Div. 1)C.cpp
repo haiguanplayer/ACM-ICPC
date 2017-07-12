@@ -1,6 +1,6 @@
 /*
 solution:
-http://www.cnblogs.com/dirge/p/5966603.html
+dp[i][j]表示第i个数变成第j小的数
 */
 #include <iostream>
 #include <cstdio>
