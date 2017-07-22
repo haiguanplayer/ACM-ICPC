@@ -54,7 +54,7 @@ int main()
             if(pp[j].second-pp[j-1].second < G[pp[j-1].first][pp[j].second])
             {
                 flag = false;
-                break;
+                break
             }
         }
         if(flag)
