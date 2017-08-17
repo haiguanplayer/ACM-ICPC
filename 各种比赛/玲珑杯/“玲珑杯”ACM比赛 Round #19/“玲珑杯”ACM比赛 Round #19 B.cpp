@@ -26,10 +26,7 @@ int Diff(int l,int r)
 }
 int main()
 {
-    int T,n,k;
-    scanf("%d",&T);
-    while(T--)
-    {
+    int n,k;
         scanf("%d%d",&n,&k);
         for(int i = 1; i <= n; ++i)//输入信息处理
         {
@@ -45,17 +42,16 @@ int main()
             while(l+1 < r)
             {
                 mid = (l+r)>>1;
-                if(Diff(i,mid) < k)
-                    l = mid;
+                if(Diff(i,mid) <= k)
+                     l = mid;
                 else
                     r = mid-1;
             }
-            if(Diff(i,r) < k)
+            if(Diff(i,r) <= k)
                 ans += 1ll*(r-i+1);
             else
                 ans += 1ll*(l-i+1);
         }
         printf("%lld\n",ans);
-    }
     return 0;
 }
