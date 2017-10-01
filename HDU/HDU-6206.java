@@ -17,10 +17,10 @@ public class Main {
         	x = in.nextBigDecimal();
         	y = in.nextBigDecimal();
         	/*
-        	 * 圆心坐标（a，b），半径r^2
-        	 *	a=((y2-y1)*(y3*y3-y1*y1+x3*x3-x1*x1)-(y3-y1)*(y2*y2-y1*y1+x2*x2-x1*x1))/(2.0*((x3-x1)*(y2-y1)-(x2-x1)*(y3-y1)));
-				b=((x2-x1)*(x3*x3-x1*x1+y3*y3-y1*y1)-(x3-x1)*(x2*x2-x1*x1+y2*y2-y1*y1))/(2.0*((y3-y1)*(x2-x1)-(y2-y1)*(x3-x1)));
-				r^2=(x-a)*(x-a)+(y-b)*(y-b);
+        	 * 圆心坐标（a，b），半径为r，点(x,y)
+        	 *	a = ((y2-y1)*(y3*y3-y1*y1+x3*x3-x1*x1) - (y3-y1)*(y2*y2-y1*y1+x2*x2-x1*x1))/(2.0*((x3-x1)*(y2-y1)-(x2-x1)*(y3-y1)));
+				b = ((x2-x1)*(x3*x3-x1*x1+y3*y3-y1*y1) - (x3-x1)*(x2*x2-x1*x1+y2*y2-y1*y1))/(2.0*((y3-y1)*(x2-x1) - (y2-y1)*(x3-x1)));
+				r^2 = (x1-a)*(x1-a) + (y1-b)*(y-b);
         	 */
         	
         	
